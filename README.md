@@ -1,7 +1,9 @@
 ## One File Remote Console.log for node.js
 
-LICENSE: BSD 
-AUTHOR: Alex Kessinger http://alexkessinger.net @voidfiles
+LICENSE: BSD
+
+AUTHOR: Alex Kessinger <http://alexkessinger.net> [@voidfiles](http://twitter.com/voidfiles)
+
 REQUIREMENTS: node.js 
 
 
