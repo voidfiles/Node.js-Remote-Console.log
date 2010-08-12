@@ -1,0 +1,26 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>untitled</title>
+    <meta name="generator" content="TextMate http://macromates.com/">
+    <meta name="author" content="Alexander Kessinger">
+    <!-- Date: 2010-08-12 -->
+</head>
+<body>
+    <h3>This is going to test the remote debugger functionality<h3>
+    
+    <script src="http://127.0.0.1:8124/debug.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        log("testing");
+        
+        catchRemote(function(){
+           var b = 0,
+           a = 1 / b;
+           a = window.console.does_not_exsist;
+           throw("WTF");
+           return a; 
+        });
+    </script>
+</body>
+</html>
