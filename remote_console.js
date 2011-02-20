@@ -55,13 +55,14 @@ function parseJson(string){
     }
 };
 
-function returnDebugJS(){
-    return 'window.log=function(){log.history=log.history||[];log.history.push(arguments);' + 
+function returnDebugJS(ns){
+    ns = ns || "window";
+    return '(function(){var log=function(){log.history=log.history||[];log.history.push(arguments);' + 
     'var message=Array.prototype.slice.call(arguments),args=JSON.stringify(message), ' + 
     'img=document.createElement("img"),url="http://'+host+':'+port+'/?console="+escape(args);' + 
     'document.write(message);img.src=url;img.style.display="none";document.body.appendChild(img);' + 
     'if(this.console){console.log(Array.prototype.slice.call(arguments))}};catchRemote=function' +
-    '(func){try{func();}catch(e){log({"error":e});}};';
+    '(func){try{func();}catch(e){log({"error":e});}};' + ns + '.log=log;})()';
     
 }
 
@@ -71,9 +72,10 @@ http.createServer(function (req, res) {
           parseJson(brokeDownRequest.query.console) :
           "No console passed";
           
-    if(req.url == "/debug.js"){
+    if(req.url.indexOf("/debug.js") === 0){
+        var ns = brokeDownRequest.query && brokeDownRequest.query.ns || "";
         res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.end(returnDebugJS());
+        res.end(returnDebugJS(ns));
         return;
     } 
     if(req.url == "/favicon.ico"){
