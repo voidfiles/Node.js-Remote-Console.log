@@ -57,13 +57,16 @@ function parseJson(string){
 
 function returnDebugJS(ns){
     ns = ns || "window";
-    return '(function(){var log=function(){log.history=log.history||[];log.history.push(arguments);' + 
-    'var message=Array.prototype.slice.call(arguments),args=JSON.stringify(message), ' + 
-    'img=document.createElement("img"),url="http://'+host+':'+port+'/?console="+escape(args);' + 
-    'img.src=url;img.style.display="none";document.body.appendChild(img);' + 
-    'if(this.console){console.log(Array.prototype.slice.call(arguments))}};catchRemote=function' +
-    '(func){try{func();}catch(e){log({"error":e});}};' + ns + '.log=log;})()';
-    
+    return '\n\
+    (function(){ \n\
+        var log=function(obj) { \n\
+            var str = JSON.stringify(obj); \n\
+            var img = document.createElement("img"); \n\
+            var url = "http://' + host + ':' + port + '/?console=" + encodeURIComponent(str); \n\
+            img.src = url; \n\
+        } \n\
+        ' + ns + '.log = log; \n\
+    })()';    
 }
 
 http.createServer(function (req, res) {
