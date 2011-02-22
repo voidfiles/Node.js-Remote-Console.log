@@ -2,9 +2,10 @@
 
 LICENSE: BSD
 
-AUTHORS: 
-    Alex Kessinger <http://alexkessinger.net> [@voidfiles](http://twitter.com/voidfiles)
-    Tim Schaub <https://github.com/tschaub>
+AUTHORS:
+
+* Alex Kessinger <http://alexkessinger.net> [@voidfiles](http://twitter.com/voidfiles)
+* Tim Schaub <https://github.com/tschaub>
 
 REQUIREMENTS: node.js 
 
