@@ -59,36 +59,48 @@ function returnDebugJS(ns){
     ns = ns || "window";
     return '\n\
     (function(){ \n\
+        var count = 0; \n\
         var log=function(obj) { \n\
             var str = JSON.stringify(obj); \n\
             var img = document.createElement("img"); \n\
-            var url = "http://' + host + ':' + port + '/?console=" + encodeURIComponent(str); \n\
+            var url = "http://' + host + ':' + port + '/?count=" + count + "&console=" + encodeURIComponent(str); \n\
             img.src = url; \n\
+            ++count; \n\
         } \n\
         ' + ns + '.log = log; \n\
     })()';    
 }
 
+var queue = {};
+var logged = 0;
+
 http.createServer(function (req, res) {
-    var brokeDownRequest = url.parse(req.url, true);
-        json_console = (brokeDownRequest.query && brokeDownRequest.query.console) ?
-          parseJson(brokeDownRequest.query.console) :
-          "No console passed";
-          
-    if(req.url.indexOf("/debug.js") === 0){
-        var ns = brokeDownRequest.query && brokeDownRequest.query.ns || "";
+    var request = url.parse(req.url, true);
+
+    var msg =  request.query.console;
+    if (msg) {
+        var count = Number(request.query.count);
+        if (count === logged) {
+            console.log(msg);
+            ++logged;
+            while (logged in queue) {
+                console.log(queue[logged]);
+                delete queue[logged];
+                ++logged;
+            }
+        } else {
+            queue[count] = msg;
+        }
+        res.writeHead(200, {'Content-Type': 'image/jpeg'});
+        res.end("");
+    } else if (req.url.indexOf("/debug.js") === 0){
+        var ns = request.query && request.query.ns || "";
         res.writeHead(200, {'Content-Type': 'text/javascript'});
         res.end(returnDebugJS(ns));
-        return;
-    } 
-    if(req.url == "/favicon.ico"){
+    } else if (req.url == "/favicon.ico"){
         res.writeHead(200, {'Content-Type': 'image/gif'});
         res.end("");
-        return;
     }
     
-    res.writeHead(200, {'Content-Type': 'image/jpeg'});
-    res.end("");
-    console.log(sys.inspect(json_console));
 }).listen(port, host);
 console.log('Server running at http://'+host+':'+port+'/');
